@@ -51,14 +51,14 @@ def update_database(filename, deckname, new, inserted, deleted):
         deck_id = create_deck(conn, deckname)
         for card in new:
             add_card(conn, deck_id, card)
-            print("Inserted {} cards.".format(len(new)))
+            print("Inserted %d cards." % len(new))
     else:
         for card in inserted:
             add_card(conn, deck_id, card)
         for card in deleted:
             delete_card(conn, deck_id, card)
-        print("Inserted {} cards.".format(len(inserted)))
-        print("Deleted {} cards.".format(len(deleted)))
+        print("Inserted %d cards." % len(inserted))
+        print("Deleted %d cards." % len(deleted))
     conn.commit()
     conn.close()
 
