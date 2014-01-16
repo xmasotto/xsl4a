@@ -1,4 +1,5 @@
-import sqlite3
+#import sqlite3
+import pysqlite69 as sqlite3
 import gdata.docs.service
 import os
 import json
@@ -117,4 +118,5 @@ for name, text in decks:
     deleted = [process_card(x) for x in deleted if is_card(x)]
     update_database("/sdcard/AnkiDroid/collection.anki2", 
                     name, new, inserted, deleted)
+#    update_database("hello/collection.anki2", name, new, inserted, deleted)
 
