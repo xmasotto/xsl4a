@@ -67,7 +67,7 @@ def get_deck(conn, deckname):
     decks = json.loads(decks_json)
     for deck in decks.values():
         if deck["name"] == deckname:
-            print("Syncing Deck: {}".format(deckname))
+            print("Syncing Deck: %s" % deckname)
             return deck["id"]
     return None
 
@@ -80,7 +80,7 @@ def create_deck(conn, deckname):
     new_deck["id"] = deck_id
     decks[deck_id] = new_deck
     conn.execute("update col set decks=?;", [json.dumps(decks)])
-    print("Creating Deck: {}".format(deckname))
+    print("Creating Deck: %s" % deckname)
 
 def add_card(conn, deck_id, card):
     pass
@@ -90,8 +90,9 @@ def delete_card(conn, deck_id, card):
 
 import android
 droid = android.Android()
-if os.path.isfile(".username"):
-    username = open(".username").read().strip()
+filename = "/sdcard/sl4a/scripts/.username"
+if os.path.isfile(filename):
+    username = open(filename).read().strip()
 else:
     username = droid.dialogGetInput("Username").result
 password = droid.dialogGetPassword("Password").result
