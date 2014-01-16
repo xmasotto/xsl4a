@@ -1,1 +1,0 @@
-../../../../share/pyshared/pysqlite2/dump.py
