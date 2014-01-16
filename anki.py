@@ -6,8 +6,8 @@ import time
 
 def find_anki_decks(username, password):
     result = []
-    client.ssl = True
     client = gdata.docs.service.DocsService()
+    client.ssl = True
     client.ClientLogin(username, password)
     for doc in client.GetDocumentListFeed().entry:
         title = doc.title.text
