@@ -92,6 +92,8 @@ def delete_card(conn, deck_id, card):
 
 def kill_process(name):
     os.popen("ps | grep %s | awk '{print $2}' | xargs kill -9" % name);
+    for line in os.readlines():
+        os.popen("echo kill -9 %s" % line.split()[1]);
 
 kill_process("com.ichi2.anki")
 
