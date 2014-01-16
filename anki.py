@@ -50,14 +50,14 @@ def update_database(filename, deckname, new, inserted, deleted):
         deck_id = create_deck(conn, deckname)
         for card in new:
             add_card(conn, deck_id, card)
-            print("Inserted {} cards.".format(len(new))
+            print("Inserted {} cards.".format(len(new)))
     else:
         for card in inserted:
             add_card(conn, deck_id, card)
         for card in deleted:
             delete_card(conn, deck_id, card)
-        print("Inserted {} cards.".format(len(inserted))
-        print("Deleted {} cards.".format(len(deleted))
+        print("Inserted {} cards.".format(len(inserted)))
+        print("Deleted {} cards.".format(len(deleted)))
     conn.commit()
     conn.close()
 
@@ -87,12 +87,15 @@ def add_card(conn, deck_id, card):
 def delete_card(conn, deck_id, card):
     pass
 
-
+"""
 import android
 droid = android.Android()
 username = f.read().strip() if f else droid.dialogGetInput("Username").result
 password = droid.dialogGetPassword("Password").result
+"""
 
+username = "xmasotto"
+password = "nubnub57"
 
 decks = find_anki_decks(username, password)
 print(decks)
