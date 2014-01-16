@@ -88,16 +88,13 @@ def add_card(conn, deck_id, card):
 def delete_card(conn, deck_id, card):
     pass
 
-#import android
-#droid = android.Android()
+import android
+droid = android.Android()
 if os.path.isfile(".username"):
     username = open(".username").read().strip()
 else:
-    username = "herro"
-#username = f.read().strip() if f else droid.dialogGetInput("Username").result
-#password = droid.dialogGetPassword("Password").result
-print(username)
-exit()
+    username = droid.dialogGetInput("Username").result
+password = droid.dialogGetPassword("Password").result
 
 decks = find_anki_decks(username, password)
 print(decks)
