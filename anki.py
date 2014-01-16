@@ -46,6 +46,8 @@ def update_database(filename, deckname, new, inserted, deleted):
     print(inserted)
     print(deleted)
     conn = sqlite3.connect(filename)
+    conn.execute("PRAGMA journal_mode = OFF")
+    conn.commit()
     deck_id = get_deck(conn, deckname)
     if not deck_id:
         deck_id = create_deck(conn, deckname)
