@@ -6,6 +6,7 @@ import time
 
 def find_anki_decks(username, password):
     result = []
+    client.ssl = True
     client = gdata.docs.service.DocsService()
     client.ClientLogin(username, password)
     for doc in client.GetDocumentListFeed().entry:
@@ -87,15 +88,10 @@ def add_card(conn, deck_id, card):
 def delete_card(conn, deck_id, card):
     pass
 
-"""
 import android
 droid = android.Android()
 username = f.read().strip() if f else droid.dialogGetInput("Username").result
 password = droid.dialogGetPassword("Password").result
-"""
-
-username = "xmasotto"
-password = "nubnub57"
 
 decks = find_anki_decks(username, password)
 print(decks)
