@@ -90,6 +90,11 @@ def add_card(conn, deck_id, card):
 def delete_card(conn, deck_id, card):
     pass
 
+def kill_process(name):
+    os.popen("ps | grep %s | awk '{print $2}' | xargs kill -9" % name);
+
+kill_process("com.ichi2.anki")
+
 import android
 droid = android.Android()
 filename = "/sdcard/sl4a/scripts/.username"
