@@ -90,7 +90,7 @@ def add_card(deck, card):
     nid = intTime(1000)
     did = deck["id"]
 
-    flds = card[0] + " " + card[1]
+    flds = card[0] + "\x1f" + card[1]
     print("Adding %s | %s" % card)
 
     # add a note
