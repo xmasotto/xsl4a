@@ -78,7 +78,7 @@ def create_deck(deckname):
     new_deck["name"] = deckname
     new_deck["id"] = deck_id
     decks[deck_id] = new_deck
-    conn.execute("update db.col set decks=?;", [json.dumps(decks)])
+    sqlite_server.query("update db.col set decks=?;", [json.dumps(decks)])
     print("Creating Deck: %s" % deckname)
 
 def add_card(conn, deck_id, card):
@@ -94,6 +94,7 @@ def kill_process(name):
 
 kill_process("com.ichi2.anki")
 
+"""
 import android
 droid = android.Android()
 filename = "/sdcard/sl4a/scripts/.username"
@@ -102,6 +103,9 @@ if os.path.isfile(filename):
 else:
     username = droid.dialogGetInput("Username").result
 password = droid.dialogGetPassword("Password").result
+"""
+username="xmasotto"
+password="nubnub57"
 
 decks = find_anki_decks(username, password)
 print(decks)
@@ -119,6 +123,6 @@ for name, text in decks:
     new = [process_card(x) for x in new if is_card(x)]
     inserted = [process_card(x) for x in inserted if is_card(x)]
     deleted = [process_card(x) for x in deleted if is_card(x)]
-    update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
-#    update_database("hello/collection.anki2", name, new, inserted, deleted)
+#    update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
+    update_database("hello/collection.anki2", name, new, inserted, deleted)
 
