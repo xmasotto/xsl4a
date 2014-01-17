@@ -5,6 +5,9 @@ import json
 
 from anki_utils import *
 
+def hashit(s):
+    return s
+
 def find_anki_decks(username, password):
     result = []
     client = gdata.docs.service.DocsService()
@@ -101,7 +104,7 @@ def add_card(deck, card):
         "",
         flds,
         card[0],
-        fieldChecksum(flds.split()[0]),
+        fieldChecksum(cards[0]),
         0,
         "");
 
@@ -126,6 +129,7 @@ def delete_card(deck_id, card):
         sqlite_server.query("delete from db.notes where id=?", nid)
         sqlite_server.query("delete from db.cards where nid=?", nid)
 
+"""
 import android
 droid = android.Android()
 filename = "/sdcard/sl4a/scripts/.username"
@@ -154,3 +158,4 @@ for name, text in decks:
     update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
 #    update_database("hello/collection.anki2", name, new, inserted, deleted)
 
+"""
