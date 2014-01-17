@@ -1,3 +1,4 @@
+import xandroid
 import sqlite_server
 import gdata.docs.service
 import os
@@ -129,17 +130,12 @@ def delete_card(deck_id, card):
         sqlite_server.query("delete from db.notes where id=?", nid)
         sqlite_server.query("delete from db.cards where nid=?", nid)
 
-import android
-droid = android.Android()
-filename = "/sdcard/sl4a/scripts/.username"
-if os.path.isfile(filename):
-    username = open(filename).read().strip()
-else:
-    username = droid.dialogGetInput("Username").result
-password = droid.dialogGetPassword("Password").result
+username = xandroid.get_saved_input("anki.py_google_username")
+password = xandroid.get_saved_password("anki.py_google_password")
 
 decks = find_anki_decks(username, password)
-print(decks)
+xandroid.save("anki.py_google_username", username)
+xandroid.save("anki.py_google_password", password)
 
 if not os.path.isdir(".anki"):
     os.makedirs(".anki")
@@ -154,5 +150,8 @@ for name, text in decks:
     new = [process_card(x) for x in new if is_card(x)]
     inserted = [process_card(x) for x in inserted if is_card(x)]
     deleted = [process_card(x) for x in deleted if is_card(x)]
-    update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
-#    update_database("hello/collection.anki2", name, new, inserted, deleted)
+    if xandroid.HAS_ANDROID:
+        db = "/sdcard/AnkiDroid/collection.anki2"
+    else:
+        db = "hello/collection.anki2"
+    update_database(db, name, new, inserted, deleted)
