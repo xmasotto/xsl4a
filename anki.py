@@ -1,4 +1,4 @@
-import pysql
+import sqlite_server
 import gdata.docs.service
 import os
 import json
@@ -43,24 +43,25 @@ def process_card(line):
     return a.strip(), b.strip()
 
 def update_database(db, deckname, new, inserted, deleted):
+    sqlite_server.load(db, "db")
     print(inserted)
     print(deleted)
-    deck_id = get_deck(db, deckname)
+    deck_id = get_deck(deckname)
     if not deck_id:
         deck_id = create_deck(conn, deckname)
         for card in new:
-            add_card(db, deck_id, card)
+            add_card(deck_id, card)
             print("Inserted %d cards." % len(new))
     else:
         for card in inserted:
-            add_card(db, deck_id, card)
+            add_card(deck_id, card)
         for card in deleted:
-            delete_card(db, deck_id, card)
+            delete_card(deck_id, card)
         print("Inserted %d cards." % len(inserted))
         print("Deleted %d cards." % len(deleted))
 
-def get_deck(db, deckname):
-    decks_json = pysql.query(db, "select decks from col")[0][0]
+def get_deck(deckname):
+    decks_json = sqlite_server.query("select decks from db.col")[0][0]
     print(decks_json)
     decks = json.loads(decks_json)
     for deck in decks.values():
@@ -69,15 +70,15 @@ def get_deck(db, deckname):
             return deck["id"]
     return None
 
-def create_deck(db, deckname):
-    decks_json = pysql.query(db, "select decks from col")[0][0]
+def create_deck(deckname):
+    decks_json = pysql.query("select decks from db.col")[0][0]
     decks = json.loads(decks_json)
     deck_id = str(int(time.time() * 1000))
     new_deck = decks["1"].copy()
     new_deck["name"] = deckname
     new_deck["id"] = deck_id
     decks[deck_id] = new_deck
-    conn.execute("update col set decks=?;", [json.dumps(decks)])
+    conn.execute("update db.col set decks=?;", [json.dumps(decks)])
     print("Creating Deck: %s" % deckname)
 
 def add_card(conn, deck_id, card):

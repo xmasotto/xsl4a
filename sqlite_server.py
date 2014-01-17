@@ -1,9 +1,19 @@
 import os
 from subprocess import Popen, PIPE, STDOUT
 
-def query(filename, query_str, *rest):
-    querylist = query_str.lower().split()
+def _run_query(query_str):
+    global g_attach_query
+    query_str = g_attach_query + query_str + ";"
+    open("sqlite_server_IN", "wa").write(query_str);
+    return open("sqlite_server_OUT", "r").read()
 
+def load(filename, dbname):
+    global g_attach_query
+    if not os.path.isfile(filename):
+        raise Exception("Database %s does not exists." % repr(filename))
+    g_attach_query = "attach '%s' as '%s';" % (filename, dbname)
+
+def query(query_str, *rest):
     # replace ? with escaped version of arguments
     last = 0
     for obj in rest:
@@ -13,17 +23,7 @@ def query(filename, query_str, *rest):
         query_str = query_str[:i] + repr(obj) + query_str[i+1:]
         last = i+1
 
-    # try running piping the query to sqlite3
-    try:
-        p = Popen(['sqlite3', filename, '-batch'], 
-                  stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-        result = p.communicate(input=query_str+";")[0]
-    except Exception:
-        raise Exception("sqlite3 must be installed on your system.")
-
-    # DEBUG
-    print("Query: " + query_str)
-
+    result = _run_query(query_str)
     # parse the results
     if result[:6] == "Error:":
         raise Exception("Invalid query: " + 
