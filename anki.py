@@ -78,7 +78,7 @@ def create_deck(deckname):
     new_deck["name"] = deckname
     new_deck["id"] = deck_id
     decks[deck_id] = new_deck
-    sqlite_server.query("update db.col set decks=?;", [json.dumps(decks)])
+    sqlite_server.query("update db.col set decks=?;", json.dumps(decks))
     print("Creating Deck: %s" % deckname)
 
 def add_card(deck_id, card):
