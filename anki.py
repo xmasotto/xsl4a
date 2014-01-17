@@ -131,8 +131,6 @@ def delete_card(deck_id, card):
         sqlite_server.query("delete from db.notes where id=?", nid)
         sqlite_server.query("delete from db.cards where nid=?", nid)
 
-os.popen("su -c kill `pgrep com.ichi2.anki`").read()
-
 username = xandroid.get_saved_input("anki.py_google_username")
 password = xandroid.get_saved_password("anki.py_google_password")
 
