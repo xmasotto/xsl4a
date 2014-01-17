@@ -39,6 +39,7 @@ def embed_latex(txt):
         second = txt.find("$$", first+2)
         if first >= 0 and second >= 0:
             latex = urllib.quote_plus(txt[first+2:second])
+            latex = latex.replace(" ","")
             middle = '<img src="http://latex.codecogs.com/gif.latex?%s" />' % latex
             txt = txt[:first] + middle + txt[second+2:]
             second = first + len(middle)
