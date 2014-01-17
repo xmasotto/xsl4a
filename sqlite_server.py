@@ -1,6 +1,8 @@
 import os
 from subprocess import Popen, PIPE, STDOUT
 
+g_attach_query = ""
+
 def _run_query(query_str):
     global g_attach_query
     query_str = g_attach_query + query_str + ";"
