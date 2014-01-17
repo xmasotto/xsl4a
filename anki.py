@@ -129,7 +129,6 @@ def delete_card(deck_id, card):
         sqlite_server.query("delete from db.notes where id=?", nid)
         sqlite_server.query("delete from db.cards where nid=?", nid)
 
-"""
 import android
 droid = android.Android()
 filename = "/sdcard/sl4a/scripts/.username"
@@ -157,5 +156,3 @@ for name, text in decks:
     deleted = [process_card(x) for x in deleted if is_card(x)]
     update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
 #    update_database("hello/collection.anki2", name, new, inserted, deleted)
-
-"""
