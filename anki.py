@@ -120,7 +120,7 @@ def add_card(deck, card):
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "")
 
 def delete_card(deck_id, card):
-    flds = card[0] + " " + card[1]
+    flds = card[0] + "\x1f" + card[1]
     print("Deleting %s | %s" % card)
 
     results = sqlite_server.query("select id from db.notes where flds=?", flds);
