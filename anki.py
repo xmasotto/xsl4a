@@ -86,7 +86,7 @@ def add_card(deck, card):
     nid = intTime(1000)
     did = deck["id"]
     mid = -1
-    for model in models:
+    for model in models.values():
         if model["name"] == "Basic":
             mid = model["id"]
 
