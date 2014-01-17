@@ -49,6 +49,7 @@ def update_database(db, deckname, new, inserted, deleted):
     deck = get_deck(deckname)
     if not deck:
         deck = create_deck(deckname)
+        print(deck["id"])
         for card in new:
             add_card(deck, card)
         print("Inserted %d cards." % len(new))
