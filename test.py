@@ -2,7 +2,7 @@ import subprocess
 
 from subprocess import Popen, PIPE, STDOUT
 
-p = Popen(['/system/bin/sqlite3'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-command = 'hello'
+command = "echo hello | sqlite3"
+p = Popen(['sh'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 print("Command: " + command)
-print("Result: \n" + p.communicate(input=command+";")[0])
+print("Result: \n" + p.communicate(input=command))
