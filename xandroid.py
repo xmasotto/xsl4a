@@ -9,7 +9,7 @@ except:
 
 def Android():
     if HAS_ANDROID:
-        return android
+        return android.Android()
     else:
         return Mocker("android.Android()")
 
