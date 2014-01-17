@@ -1,0 +1,1 @@
+su -c kill `pgrep anki`
