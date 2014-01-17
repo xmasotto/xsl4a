@@ -20,7 +20,7 @@ def query(query_str, *rest):
         i = query_str.find("?", last)
         if i == -1:
             raise Exception("Too many arguments, not enough ?")
-        query_str = query_str[:i] + repr(obj) + query_str[i+1:]
+        query_str = query_str[:i] + repr(str(obj)) + query_str[i+1:]
         last = i+1
 
     result = _run_query(query_str)
