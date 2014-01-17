@@ -71,7 +71,7 @@ def get_deck(deckname):
     return None
 
 def create_deck(deckname):
-    decks_json = pysql.query("select decks from db.col")[0][0]
+    decks_json = sqlite_server.query("select decks from db.col")[0][0]
     decks = json.loads(decks_json)
     deck_id = str(int(time.time() * 1000))
     new_deck = decks["1"].copy()
