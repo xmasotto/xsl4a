@@ -5,9 +5,6 @@ import json
 
 from anki_utils import *
 
-def hashit(s):
-    return s
-
 def find_anki_decks(username, password):
     result = []
     client = gdata.docs.service.DocsService()
@@ -86,7 +83,7 @@ def create_deck(deckname):
 def add_card(deck, card):
     models_json = sqlite_server.query("select models from db.col")[0][0]
     models = json.loads(models_json)
-    mid = models.keys().pop()
+    mid = next(x in models if x["name"] == "Basic")
     nid = intTime(1000)
     did = deck["id"]
 
