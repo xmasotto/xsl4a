@@ -21,6 +21,9 @@ def query(filename, query_str, *rest):
     except Exception:
         raise Exception("sqlite3 must be installed on your system.")
 
+    # DEBUG
+    print("Query: " + query_str)
+
     # parse the results
     if result[:6] == "Error:":
         raise Exception("Invalid query: " + 

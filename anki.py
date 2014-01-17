@@ -61,6 +61,7 @@ def update_database(db, deckname, new, inserted, deleted):
 
 def get_deck(db, deckname):
     decks_json = pysql.query(db, "select decks from col")[0][0]
+    print(decks_json)
     decks = json.loads(decks_json)
     for deck in decks.values():
         if deck["name"] == deckname:
@@ -117,6 +118,6 @@ for name, text in decks:
     new = [process_card(x) for x in new if is_card(x)]
     inserted = [process_card(x) for x in inserted if is_card(x)]
     deleted = [process_card(x) for x in deleted if is_card(x)]
-    update_database("/storage/emulated/0/AnkiDroid/collection.anki2", name, new, inserted, deleted)
+    update_database("/sdcard/AnkiDroid/collection.anki2", name, new, inserted, deleted)
 #    update_database("hello/collection.anki2", name, new, inserted, deleted)
 
