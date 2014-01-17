@@ -27,11 +27,9 @@ def query(query_str, *rest):
         query_str = query_str[:i] + inserted + query_str[i+1:]
         last = i + len(inserted) + 1
 
-    print(query_str)
     result = _run_query(query_str)
     # parse the results
     if result[:6] == "Error:":
-        print(query_str)
         raise Exception("Invalid query: " + 
                         repr(query_str) + "," + result[6:])
     return [x.split("|") for x in result.splitlines()]

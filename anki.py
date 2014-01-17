@@ -2,7 +2,8 @@ import sqlite_server
 import gdata.docs.service
 import os
 import json
-import time
+
+from anki_utils import *
 
 def find_anki_decks(username, password):
     result = []
@@ -44,55 +45,86 @@ def process_card(line):
 
 def update_database(db, deckname, new, inserted, deleted):
     sqlite_server.load(db, "db")
-    print(inserted)
-    print(deleted)
-    deck_id = get_deck(deckname)
-    if not deck_id:
-        deck_id = create_deck(deckname)
+    deck = get_deck(deckname)
+    if not deck:
+        deck = create_deck(deckname)
         for card in new:
-            add_card(deck_id, card)
-            print("Inserted %d cards." % len(new))
+            add_card(deck, card)
+        print("Inserted %d cards." % len(new))
     else:
         for card in inserted:
-            add_card(deck_id, card)
+            add_card(deck, card)
         for card in deleted:
-            delete_card(deck_id, card)
+            delete_card(deck, card)
         print("Inserted %d cards." % len(inserted))
         print("Deleted %d cards." % len(deleted))
 
 def get_deck(deckname):
     decks_json = sqlite_server.query("select decks from db.col")[0][0]
-    print(decks_json)
     decks = json.loads(decks_json)
     for deck in decks.values():
         if deck["name"] == deckname:
             print("Syncing Deck: %s" % deckname)
-            return deck["id"]
+            return deck
     return None
 
 def create_deck(deckname):
     decks_json = sqlite_server.query("select decks from db.col")[0][0]
     decks = json.loads(decks_json)
-    deck_id = str(int(time.time() * 1000))
+    deck_id = str(intTime(1000))
     new_deck = decks["1"].copy()
     new_deck["name"] = deckname
     new_deck["id"] = deck_id
     decks[deck_id] = new_deck
     sqlite_server.query("update db.col set decks=?;", json.dumps(decks))
     print("Creating Deck: %s" % deckname)
+    return new_deck
 
-def add_card(deck_id, card):
-    pass
+def add_card(deck, card):
+    models_json = sqlite_server.query("select models from db.col")[0][0]
+    models = json.loads(models_json)
+    mid = models.keys().pop()
+    nid = intTime(1000)
+    did = deck["id"]
+
+    flds = card[0] + " " + card[1]
+    print("Adding %s | %s" % card)
+
+    # add a note
+    sqlite_server.query(
+        "insert into db.notes values (?,?,?,?,?,?,?,?,?,?,?)",
+        nid,
+        str(intTime(1000))[-5:],
+        mid,
+        intTime(1),
+        -1,
+        "",
+        flds,
+        card[0],
+        fieldChecksum(flds.split()[0]),
+        0,
+        "");
+
+    # add a card
+    sqlite_server.query(
+        "insert into db.cards values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        intTime(1000),
+        nid,
+        did,
+        0,
+        intTime(1),
+        -1,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "")
 
 def delete_card(deck_id, card):
-    pass
+    flds = card[0] + " " + card[1]
+    print("Deleting %s | %s" % card)
 
-def kill_process(name):
-    p = os.popen("ps | grep %s" % name);
-    for line in p.readlines():
-        os.popen("echo kill -9 %s" % line.split()[1]);
-
-kill_process("com.ichi2.anki")
+    results = sqlite_server.query("select id from db.notes where flds=?", flds);
+    for result in results:
+        nid = result[0]
+        sqlite_server.query("delete from db.notes where id=?", nid)
+        sqlite_server.query("delete from db.cards where nid=?", nid)
 
 import android
 droid = android.Android()
