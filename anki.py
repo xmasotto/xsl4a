@@ -5,7 +5,8 @@ import os
 import json
 import urllib
 
-from anki_utils import *
+def intTime(scale=1):
+    return int(time.time()*scale)
 
 def find_anki_decks(username, password):
     result = []
