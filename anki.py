@@ -83,9 +83,12 @@ def create_deck(deckname):
 def add_card(deck, card):
     models_json = sqlite_server.query("select models from db.col")[0][0]
     models = json.loads(models_json)
-    mid = next(x in models if x["name"] == "Basic")
     nid = intTime(1000)
     did = deck["id"]
+    mid = -1
+    for model in models:
+        if model["name"] == "Basic":
+            mid = model["id"]
 
     flds = card[0] + "\x1f" + card[1]
     print("Adding %s | %s" % card)
