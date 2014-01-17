@@ -3,6 +3,7 @@ import sqlite_server
 import gdata.docs.service
 import os
 import json
+import urllib
 
 from anki_utils import *
 
@@ -40,9 +41,25 @@ def is_card(line):
     a, b = process_card(line)
     return len(a) > 0 and len(b) > 0
 
+def embed_latex(txt):
+    second = 0
+    while True:
+        first = txt.find("$$", second)
+        second = txt.find("$$", first+2)
+        if first >= 0 and second >= 0:
+            latex = urllib.quote_plus(txt[first+2:second])
+            middle = '<img src="http://latex.codecogs.com/gif.latex?%s" />' % latex
+            second = first + len(middle)
+            txt = txt[:first] + middle + txt[second+2:]
+        else:
+            break
+    return txt
+
 def process_card(line):
     a, b = line.split(">")
-    return a.strip(), b.strip()
+    a = embed_latex(a.strip())
+    b = embed_latex(b.strip())
+    return a, b
 
 def update_database(db, deckname, new, inserted, deleted):
     sqlite_server.load(db, "db")
@@ -92,8 +109,10 @@ def add_card(deck, card):
         if model["name"] == "Basic":
             mid = model["id"]
 
-    flds = card[0] + "\x1f" + card[1]
     print("Adding %s | %s" % card)
+    
+
+    flds = card[0] + "\x1f" + card[1]
 
     # add a note
     sqlite_server.query(
