@@ -104,7 +104,7 @@ def add_card(deck, card):
         "",
         flds,
         card[0],
-        fieldChecksum(cards[0]),
+        fieldChecksum(card[0]),
         0,
         "");
 
