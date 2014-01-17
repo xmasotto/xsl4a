@@ -1,4 +1,4 @@
-import sqlite3
+import pysql
 import gdata.docs.service
 import os
 import json
@@ -42,30 +42,25 @@ def process_card(line):
     a, b = line.split(">")
     return a.strip(), b.strip()
 
-def update_database(filename, deckname, new, inserted, deleted):
+def update_database(db, deckname, new, inserted, deleted):
     print(inserted)
     print(deleted)
-    conn = sqlite3.connect(filename)
-    conn.execute("PRAGMA journal_mode = OFF")
-    conn.commit()
-    deck_id = get_deck(conn, deckname)
+    deck_id = get_deck(db, deckname)
     if not deck_id:
         deck_id = create_deck(conn, deckname)
         for card in new:
-            add_card(conn, deck_id, card)
+            add_card(db, deck_id, card)
             print("Inserted %d cards." % len(new))
     else:
         for card in inserted:
-            add_card(conn, deck_id, card)
+            add_card(db, deck_id, card)
         for card in deleted:
-            delete_card(conn, deck_id, card)
+            delete_card(db, deck_id, card)
         print("Inserted %d cards." % len(inserted))
         print("Deleted %d cards." % len(deleted))
-    conn.commit()
-    conn.close()
 
-def get_deck(conn, deckname):
-    decks_json = conn.execute("select decks from col").fetchone()[0]
+def get_deck(db, deckname):
+    decks_json = pysql.query(db, "select decks from col")[0][0]
     decks = json.loads(decks_json)
     for deck in decks.values():
         if deck["name"] == deckname:
@@ -73,8 +68,8 @@ def get_deck(conn, deckname):
             return deck["id"]
     return None
 
-def create_deck(conn, deckname):
-    decks_json = conn.execute("select decks from col").fetchone()[0]
+def create_deck(db, deckname):
+    decks_json = pysql.query(db, "select decks from col")[0][0]
     decks = json.loads(decks_json)
     deck_id = str(int(time.time() * 1000))
     new_deck = decks["1"].copy()
@@ -122,7 +117,6 @@ for name, text in decks:
     new = [process_card(x) for x in new if is_card(x)]
     inserted = [process_card(x) for x in inserted if is_card(x)]
     deleted = [process_card(x) for x in deleted if is_card(x)]
-    update_database("/storage/emulated/0/AnkiDroid/collection.anki2", 
-                    name, new, inserted, deleted)
+    update_database("/storage/emulated/0/AnkiDroid/collection.anki2", name, new, inserted, deleted)
 #    update_database("hello/collection.anki2", name, new, inserted, deleted)
 
