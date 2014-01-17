@@ -13,6 +13,9 @@ def load(filename, dbname):
         raise Exception("Database %s does not exists." % repr(filename))
     g_attach_query = "attach '%s' as '%s';" % (filename, dbname)
 
+def _sqlite_escape(s):
+    return s.replace("'", "''")
+
 def query(query_str, *rest):
     # replace ? with escaped version of arguments
     last = 0
@@ -20,12 +23,15 @@ def query(query_str, *rest):
         i = query_str.find("?", last)
         if i == -1:
             raise Exception("Too many arguments, not enough ?")
-        query_str = query_str[:i] + repr(str(obj)) + query_str[i+1:]
-        last = i+1
+        inserted = "'" + _sqlite_escape(str(obj)) + "'"
+        query_str = query_str[:i] + inserted + query_str[i+1:]
+        last = i + len(inserted) + 1
 
+    print(query_str)
     result = _run_query(query_str)
     # parse the results
     if result[:6] == "Error:":
+        print(query_str)
         raise Exception("Invalid query: " + 
                         repr(query_str) + "," + result[6:])
     return [x.split("|") for x in result.splitlines()]
