@@ -1,9 +1,9 @@
 def Android():
     try:
         import android
-        return android.Android()
-    else:
+    except:
         return Mocker("android.Android()")
+    return android.Android()
 
 class Mocker():
     def __init__(self, name):
