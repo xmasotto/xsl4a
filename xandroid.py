@@ -1,13 +1,17 @@
 import getpass
 
 HAS_ANDROID = False
+try:
+    import android
+    HAS_ANDROID = True
+except:
+    pass
+
 def Android():
-    try:
-        import android
-        HAS_ANDROID = True
-    except:
+    if HAS_ANDROID:
+        return android
+    else:
         return Mocker("android.Android()")
-    return android.Android()
 
 def read_settings():
     result = {}
