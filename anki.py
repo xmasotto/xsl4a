@@ -42,14 +42,19 @@ def update_database(db, deckname, new, inserted, deleted):
     if not deck:
         deck = create_deck(deckname)
         print(deck["id"])
+        new = cards.process_cards(new)
         for card in new:
             add_card(deck, card)
         print("Inserted %d cards." % len(new))
     else:
+        deleted = cards.process_cards(deleted)
         for card in deleted:
             delete_card(deck, card)
+
+        inserted = cards.process_cards(inserted)
         for card in inserted:
             add_card(deck, card)
+
         print("Inserted %d cards." % len(inserted))
         print("Deleted %d cards." % len(deleted))
 
@@ -138,12 +143,8 @@ for name, text in decks:
     if os.path.isfile(filename):
         old = [x.strip() for x in open(filename).readlines()]
     new = list(set([x.strip() for x in text.splitlines()]))
-    open(filename, "w").writelines(text)
-
     inserted, deleted = findInsertedDeleted(new, old)
-    new = cards.process_cards(new)
-    inserted = cards.process_cards(inserted)
-    deleted = cards.process_cards(deleted)
+    open(filename, "w").writelines(text)
 
     if xandroid.HAS_ANDROID:
         db = "/sdcard/AnkiDroid/collection.anki2"
