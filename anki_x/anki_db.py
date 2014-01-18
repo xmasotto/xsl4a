@@ -4,7 +4,8 @@ import os
 import json
 from anki_util import int_time
 
-sys.path.append(os.path.abspath('..'))
+p = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(p + "/..")
 print(sys.path)
 import sqlite_server
 

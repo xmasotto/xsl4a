@@ -8,7 +8,8 @@ import anki_db
 import anki_cards
 import anki_util
 
-sys.path.append(os.path.abspath('..'))
+p = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(p + "/..")
 import xandroid
 
 if xandroid.HAS_ANDROID:
