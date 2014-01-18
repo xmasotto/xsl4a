@@ -66,12 +66,9 @@ def wikipedia_card(line):
         bs = BeautifulSoup.BeautifulSoup(urllib2.urlopen(url).read())
         src = "http:" + bs.find("img")["src"]
         front = '<img src="%s" />' % src
-        print(bs.find("title"))
-        print(bs.find("h1"))
         back = "".join(bs.find("h1").findAll(text=True))
         return front, back
     except:
-        raise
         return None
 
 def definition_card(line):
@@ -100,6 +97,5 @@ def definition_card(line):
 
         return word, back
     except:
-        raise
         return None
 
