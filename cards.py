@@ -68,7 +68,7 @@ def wikipedia_card(line):
         front = '<img src="%s" />' % src
         print(bs.find("title"))
         print(bs.find("h1"))
-        back = bs.find("h1").text
+        back = "".join(bs.find("h1").findAll(text=True))
         return front, back
     except:
         raise
