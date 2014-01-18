@@ -64,7 +64,7 @@ def wikipedia_card(line):
     url = "http://en.wikipedia.org/wiki/%s" % line.strip()
     try:
         bs = BeautifulSoup.BeautifulSoup(urllib2.urlopen(url).read())
-        src = bs.find("img")["src"]
+        src = "http:" + bs.find("img")["src"]
         front = '<img src="%s" />' % src
         print(bs.find("title"))
         print(bs.find("h1"))
@@ -91,10 +91,13 @@ def definition_card(line):
                 if term['type'] == 'text':
                     pos = term['labels'][0]['text']
             back += pos + ":\n"
-            for i, entry in enumerate(primary['entries']):
-                if entry['type'] == "meaning" and i <= definition_limit:
+            counter = 0
+            for entry in primary['entries']:
+                if entry['type'] == "meaning" and counter < definition_limit:
+                    counter+=1
                     definition = entry['terms'][0]['text']
-                    back += ("(%d) "%(i+1)) + definition + "\n"
+                    back += ("(%d) "%counter) + definition + "\n"
+
         return word, back
     except:
         raise
