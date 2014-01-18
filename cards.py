@@ -92,13 +92,13 @@ def definition_card(line):
             for term in primary['terms']:
                 if term['type'] == 'text':
                     pos = term['labels'][0]['text']
-            back += pos + ":\n"
+            back += pos + ":<br>"
             counter = 0
             for entry in primary['entries']:
                 if entry['type'] == "meaning" and counter < definition_limit:
                     counter+=1
                     definition = entry['terms'][0]['text']
-                    back += ("(%d) "%counter) + definition + "\n"
+                    back += ("(%d) "%counter) + definition + "<br>"
 
         return word, back
     except:
