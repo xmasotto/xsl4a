@@ -24,6 +24,7 @@ def process_cards(lines):
         line = line.strip()
         card = process_card(line)
         if card != None:
+            print(card)
             result.append((
                     embed_latex(card[0].strip()),
                     embed_latex(card[1].strip())))
@@ -68,6 +69,7 @@ def wikipedia_card(line):
         back = bs.find("title").text
         return front, back
     except:
+        raise
         return None
 
 def definition_card(line):
