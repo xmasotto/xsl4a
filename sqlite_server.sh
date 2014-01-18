@@ -1,4 +1,5 @@
 # create pipes if they don't exists
+cd `dirname $0`
 [ -e "sqlite_server_IN" ] || mkfifo "sqlite_server_IN"
 [ -e "sqlite_server_OUT" ] || mkfifo "sqlite_server_OUT"
 
