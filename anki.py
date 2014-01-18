@@ -1,9 +1,12 @@
-import xandroid
-import sqlite_server
-import gdata.docs.service
 import os
 import json
 import urllib
+import gdata.docs.service
+import time
+
+import sqlite_server
+import xandroid
+import cards
 
 def intTime(scale=1):
     return int(time.time()*scale)
@@ -32,54 +35,6 @@ def findInsertedDeleted(new, old):
         if line not in new:
             deleted.append(line)
     return inserted, deleted
-
-def embed_latex(txt):
-    second = 0
-    while True:
-        first = txt.find("$$", second)
-        second = txt.find("$$", first+2)
-        if first >= 0 and second >= 0:
-            latex = urllib.quote_plus(
-                txt[first+2:second].replace(" ",""))
-            middle = '<img src="http://latex.codecogs.com/gif.latex?%s" />' % latex
-            txt = txt[:first] + middle + txt[second+2:]
-            second = first + len(middle)
-        else:
-            break
-    return txt
-
-def process_cards(lines):
-    result = []
-    for line in lines:
-        card = process_card(line)
-        if card != None:
-            result.append(card)
-    return result
-
-def process_card(line):
-    if "<" in line and ">" in line:
-        txt = line
-        second = 0
-        while True:
-            first = txt.find("<", second)
-            second = txt.find(">", first+1)
-            if first >= 0 and second >= 0:
-                middle = "(...)"
-                txt = txt[:first] + middle + txt[second+1:]
-                second = first + len(middle)
-            else:
-                break
-        line = line.replace("<", "")
-        line = line.replace(">", "")
-        return embed_latex(txt.strip()), embed_latex(line.strip())
-
-    if ">" in line:
-        a, b = line.split(">")
-        a = embed_latex(a.strip())
-        b = embed_latex(b.strip())
-        return a, b
-
-    return None
 
 def update_database(db, deckname, new, inserted, deleted):
     sqlite_server.load(db, "db")
@@ -186,9 +141,9 @@ for name, text in decks:
     open(filename, "w").writelines(text)
 
     inserted, deleted = findInsertedDeleted(new, old)
-    new = process_cards(new)
-    inserted = process_cards(inserted)
-    deleted = process_cards(deleted)
+    new = cards.process_cards(new)
+    inserted = cards.process_cards(inserted)
+    deleted = cards.process_cards(deleted)
 
     if xandroid.HAS_ANDROID:
         db = "/sdcard/AnkiDroid/collection.anki2"
