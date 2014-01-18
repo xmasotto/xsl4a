@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+cp AnkiDroid/original_collection.anki2 AnkiDroid/collection.anki2
+rm -f AnkiDroid/collection.media/*
