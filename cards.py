@@ -24,7 +24,7 @@ def process_cards(lines):
         line = line.strip()
         card = process_card(line)
         if card != None:
-            print(card)
+            print("Processed " + card[0] + " | " + card[1])
             result.append((
                     embed_latex(card[0].strip()),
                     embed_latex(card[1].strip())))
@@ -64,7 +64,12 @@ def wikipedia_card(line):
     url = "http://en.wikipedia.org/wiki/%s" % line.strip()
     try:
         bs = BeautifulSoup.BeautifulSoup(urllib2.urlopen(url).read())
-        src = "http:" + bs.find("img")["src"]
+        src = ""
+        tables = bs.findAll("table")
+        for table in tables:
+            if "infobox" in table['class']:
+                src = "http:" + table.find("img")["src"]
+                break
         front = '<img src="%s" />' % src
         back = "".join(bs.find("h1").findAll(text=True))
         return front, back
