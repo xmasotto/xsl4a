@@ -5,6 +5,7 @@ import json
 from anki_util import int_time
 
 sys.path.append(os.path.abspath('..'))
+print(sys.path)
 import sqlite_server
 
 def init(db):
