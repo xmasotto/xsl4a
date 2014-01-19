@@ -84,7 +84,9 @@ def insert_card(deck, line, deck_data):
         back = anki_util.expand_macro(card[1], "[img:", "]", expand_image)
         nid = anki_db.add_card(deck, (front, back))
         deck_data['nid2did'][nid] = deck['id']
-        deck_data['line2nid'].get(line, []).append(nid)
+        temp = deck_data['line2nid'].get(line, [])
+        temp.append(nid)
+        deck_data['line2nid'] = temp
     if len(cards) > 0:
         print("Added card(s): %s" % line)
 
