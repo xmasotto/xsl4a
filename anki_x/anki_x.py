@@ -63,7 +63,7 @@ def deck_main(deckname, new):
     for nid in anki_db.get_default_cards():
         if nid in deck_data['nid2did']:
             anki_db.fix_deck_id(
-                nid, deck_data['nid2did'])
+                nid, deck_data['nid2did'][nid])
             print("Fixed %s" % nid)
 
     deck_data['lines'] = new
