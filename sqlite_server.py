@@ -7,8 +7,6 @@ def _run_query(query_str):
     global g_attach_query
     query_str = g_attach_query + query_str + ";"
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    print(query_str)
-    print(script_dir)
     open(os.path.join(script_dir, "sqlite_server_IN"), "wa").write(query_str);
     return open(os.path.join(script_dir, "sqlite_server_OUT"), "r").read()
 
