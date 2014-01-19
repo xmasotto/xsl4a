@@ -47,6 +47,7 @@ def deck_main(deckname, new):
     deck = anki_db.get_deck(deckname)
     if deck == None:
         print("Creating deck: %s" % deckname)
+        decK_data = anki_util.new_deck_data()
         deck = anki_db.create_deck(deckname)
         for line in new:
             insert_card(deck, line, deck_data)

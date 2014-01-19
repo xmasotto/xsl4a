@@ -9,6 +9,14 @@ import urllib2
 def int_time(scale=1):
     return int(time.time()*scale)
 
+def new_deck_data():
+    deck_data = {}
+    deck_data['lines'] = []
+    deck_data['nid2did'] = {}
+    deck_data['url2img'] = {}
+    deck_data['line2nid'] = {}
+    return deck_data
+
 def load_deck_data(deckname):
     if not os.path.isdir(".anki"):
         os.makedirs(".anki")
@@ -16,18 +24,15 @@ def load_deck_data(deckname):
     if os.path.isfile(filename):
        deck_data = pickle.load(open(filename))
     else:
-        deck_data = {}
-        deck_data['lines'] = []
-        deck_data['nid2did'] = {}
-        deck_data['url2img'] = {}
-        deck_data['line2nid'] = {}
+        deck_data = new_deck_data()
     return deck_data
 
 def save_deck_data(deckname, data):
     if not os.path.isdir(".anki"):
         os.makedirs(".anki")
     filename = os.path.join(".anki", deckname + ".p")
-    pickle.dump(data, open(filename, "wb"))
+    if data != None:
+        pickle.dump(data, open(filename, "wb"))
 
 def expand_macro(txt, macro_start, macro_end, f):
     second = 0
