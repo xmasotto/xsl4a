@@ -69,6 +69,7 @@ def deck_main(deckname, new):
     anki_util.save_deck_data(deckname, deck_data)
 
 def insert_card(deck, line, deck_data):
+    print("Processing card: %s" % line)
     card = anki_cards.process_card(line)
     if card != None:
         def expand_image(url):
@@ -79,7 +80,7 @@ def insert_card(deck, line, deck_data):
         front = anki_util.expand_macro(card[0], "[img:", "]", expand_image)
         back = anki_util.expand_macro(card[1], "[img:", "]", expand_image)
         nid = anki_db.add_card(deck, (front, back))
-        deck_data['nid2did'] = deck['id']
+        deck_data['nid2did'][nid] = deck['id']
         deck_data['line2nid'][line] = nid
         print("Added card: %s" % line)
 
