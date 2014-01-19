@@ -86,7 +86,7 @@ def insert_card(deck, line, deck_data):
         deck_data['nid2did'][nid] = deck['id']
         temp = deck_data['line2nid'].get(line, [])
         temp.append(nid)
-        deck_data['line2nid'] = temp
+        deck_data['line2nid'][line] = temp
     if len(cards) > 0:
         print("Added card(s): %s" % line)
 
