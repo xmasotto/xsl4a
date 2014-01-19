@@ -96,7 +96,8 @@ def python_card(line):
         module = __import__(line)
         for attr in dir(module):
             obj = getattr(module, attr)
-            if not hasattr(obj, '__call__'):
+            if (not hasattr(obj, '__call__')
+                or type(obj) == type):
                 continue
             if attr[0] == "_" or "__" in attr:
                 continue
