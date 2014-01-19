@@ -60,7 +60,6 @@ def deck_main(deckname, new):
 
     # fix corrupted decks
     for nid in anki_db.get_default_cards():
-        print(nid)
         if nid in deck_data['nid2did']:
             anki_db.fix_deck_id(
                 nid, deck_data['nid2did'])
@@ -80,6 +79,7 @@ def insert_card(deck, line, deck_data):
         front = anki_util.expand_macro(card[0], "[img:", "]", expand_image)
         back = anki_util.expand_macro(card[1], "[img:", "]", expand_image)
         nid = anki_db.add_card(deck, (front, back))
+        deck_data['nid2did'] = deck['id']
         deck_data['line2nid'][line] = nid
         print("Added card: %s" % line)
 
