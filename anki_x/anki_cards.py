@@ -33,7 +33,9 @@ def process_side(txt):
 def fill_in_blank_card(line):
     front = expand_macro(
         line, "<", ">", lambda x: "(...)")
-    return front, line
+    back = expand_macro(
+        line, "<", ">", lambda x: x)
+    return front, back
 
 def normal_card(line):
     return tuple(line.split(">")[:2])

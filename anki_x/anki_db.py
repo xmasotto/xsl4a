@@ -85,7 +85,6 @@ def delete_card(nid):
 def get_default_cards():
     result = sqlite_server.query(
         "select nid from db.cards where did='1'")
-    print(result)
     return [x[0] for x in result]
 
 # Since Anki sometimes randomly changes the deck_id to 1, occasionally

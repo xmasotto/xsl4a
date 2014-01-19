@@ -70,7 +70,6 @@ def deck_main(deckname, new):
     anki_util.save_deck_data(deckname, deck_data)
 
 def insert_card(deck, line, deck_data):
-    print("Processing card: %s" % line)
     card = anki_cards.process_card(line)
     if card != None:
         def expand_image(url):
