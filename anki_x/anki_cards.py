@@ -89,8 +89,6 @@ def define_card(line):
         raise
         return []
 
-from types import FunctionType
-
 def python_card(line):
     try:
         result = []
@@ -98,7 +96,7 @@ def python_card(line):
         module = __import__(line)
         for attr in dir(module):
             obj = getattr(module, attr)
-            if type(obj) != FunctionType:
+            if not hasattr(obj, '__call__'):
                 continue
             if attr[0] == "_" or "__" in attr:
                 continue
