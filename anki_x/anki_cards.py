@@ -3,6 +3,7 @@
 import BeautifulSoup
 import urllib2
 import json
+import re
 from anki_util import expand_macro, is_prefix
 
 def process_cards(line):
@@ -134,7 +135,8 @@ def python_dir_cards(line, module):
                 if attr not in d:
                     break
             doc = "<br>".join(doc_lines)
-            front = "In module %s ...<br>%s" % (line, doc)
-            back = line + "." + attr + "()"
+            doc2 = re.sub(r'\b%s\('%attr, 'function(', doc)
+            front = "In module %s ... <br>%s" % (line, doc2) 
+            back = "%s.%s()" % (line, attr)
             result.append((front, back))
     return result
