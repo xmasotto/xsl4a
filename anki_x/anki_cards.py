@@ -5,15 +5,15 @@ import urllib2
 import json
 from anki_util import expand_macro, is_prefix
 
-def process_card(line):
-    card = get_card(line)
-    if card == None:
-        return None
-    else:
+def process_cards(line):
+    cards = get_cards(line)
+    result = []
+    for card in cards:
         front, back = card
-        return process_side(front), process_side(back)
+        result.append((process_side(front), process_side(back)))
+    return result
 
-def get_card(line):
+def get_cards(line):
     line = line.strip()
     if "<" in line and ">" in line:
         return fill_in_blank_card(line)
@@ -23,6 +23,9 @@ def get_card(line):
         return wiki_card(line[5:])
     if is_prefix(line, "define:"):
         return define_card(line[7:])
+    if is_prefix(line, "python:"):
+        return python_card(line[7:])
+    return []
 
 def process_side(txt):
     txt = expand_macro(
@@ -35,10 +38,10 @@ def fill_in_blank_card(line):
         line, "<", ">", lambda x: "(...)")
     back = expand_macro(
         line, "<", ">", lambda x: x)
-    return front, back
+    return [(front, back)]
 
 def normal_card(line):
-    return tuple(line.split(">")[:2])
+    return [tuple(line.split(">")[:2])]
 
 def wiki_card(line):
     url = "http://en.wikipedia.org/wiki/%s" % line.strip()
@@ -52,10 +55,10 @@ def wiki_card(line):
                 break
         front = '[img:%s]' % src
         back = "".join(bs.find("h1").findAll(text=True))
-        return front, back
+        return [(front, back)]
     except:
         raise
-        return None
+        return []
 
 def define_card(line):
     word = line.strip()
@@ -81,7 +84,38 @@ def define_card(line):
                     definition = entry['terms'][0]['text']
                     back += ("(%d) "%counter) + definition + "<br>"
 
-        return word, back
+        return [(word, back)]
     except:
         raise
-        return None
+        return []
+
+from types import FunctionType
+
+def python_card(line):
+    try:
+        result = []
+        line = line.strip()
+        module = __import__(line)
+        for attr in dir(module):
+            obj = getattr(module, attr)
+            if type(obj) != FunctionType:
+                continue
+            if attr[0] == "_" or "__" in attr:
+                continue
+            if obj.__doc__:
+                ds = obj.__doc__.split("\n\n")
+                doc_lines = []
+                for i, d in enumerate(ds):
+                    if d.strip() == "":
+                        continue
+                    doc_lines.append(d)
+                    if attr not in d:
+                        break
+                doc = "\n".join(doc_lines)
+                front = line + "." + attr + "()"
+                back = doc
+                result.append((front, back))
+        return result
+    except:
+        raise
+        return []

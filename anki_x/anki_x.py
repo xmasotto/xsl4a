@@ -70,8 +70,8 @@ def deck_main(deckname, new):
     anki_util.save_deck_data(deckname, deck_data)
 
 def insert_card(deck, line, deck_data):
-    card = anki_cards.process_card(line)
-    if card != None:
+    cards = anki_cards.process_cards(line)
+    for card in cards:
         def expand_image(url):
             filename = anki_util.save_image(ANKI_DIR, url)
             deck_data['url2img'][url] = filename
@@ -81,14 +81,14 @@ def insert_card(deck, line, deck_data):
         back = anki_util.expand_macro(card[1], "[img:", "]", expand_image)
         nid = anki_db.add_card(deck, (front, back))
         deck_data['nid2did'][nid] = deck['id']
-        deck_data['line2nid'][line] = nid
-        print("Added card: %s" % line)
+        deck_data['line2nid'].get(line, []).append(nid)
+    print("Added card(s): %s" % line)
 
 def delete_card(deck, line, deck_data):
     if line in deck_data['line2nid']:
-        nid = deck_data['line2nid'][line]
-        anki_db.delete_card(nid)
-        print("Deleted card: %s" % line)
+        for nid in deck_data['line2nid'].get(line, []):
+            anki_db.delete_card(nid)
+        print("Deleted card(s): %s" % line)
 
 def find_anki_decks(username, password):
     result = []
