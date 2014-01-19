@@ -43,6 +43,9 @@ def deck_main(deckname, new):
     deck_data = anki_util.load_deck_data(deckname)
     old = deck_data['lines']
 
+    print(old)
+    print(new)
+
     # update the decks
     deck = anki_db.get_deck(deckname)
     if deck == None:
