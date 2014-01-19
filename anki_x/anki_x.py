@@ -60,10 +60,6 @@ def deck_main(deckname, new):
             insert_card(deck, line, deck_data)
 
     # fix corrupted decks
-    print("KEYS")
-    print(deck_data['nid2did'].keys())
-    print("DEFAULT_CARDS")
-    print(anki_db.get_default_cards())
     for nid in anki_db.get_default_cards():
         if nid in deck_data['nid2did']:
             anki_db.fix_deck_id(
