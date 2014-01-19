@@ -80,13 +80,13 @@ def insert_card(deck, line, deck_data):
         back = anki_util.expand_macro(card[1], "[img:", "]", expand_image)
         nid = anki_db.add_card(deck, (front, back))
         deck_data['line2nid'][line] = nid
-        print(front, back)
         print("Added card: %s" % line)
 
 def delete_card(deck, line, deck_data):
-    nid = deck_data['line2nid'][line]
-    anki_db.delete_card(nid)
-    print("Deleted card: %s" % line)
+    if line in deck_data['line2nid']:
+        nid = deck_data['line2nid'][line]
+        anki_db.delete_card(nid)
+        print("Deleted card: %s" % line)
 
 def find_anki_decks(username, password):
     result = []

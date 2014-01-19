@@ -6,7 +6,6 @@ from anki_util import int_time
 
 p = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(p + "/..")
-print(sys.path)
 import sqlite_server
 
 def init(db):
