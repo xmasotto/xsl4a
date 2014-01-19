@@ -24,7 +24,7 @@ def get_cards(line):
     if is_prefix(line, "define:"):
         return define_card(line[7:])
     if is_prefix(line, "python:"):
-        return python_card(line[7:])
+        return python_cards(line[7:])
     return []
 
 def process_side(txt):
@@ -89,32 +89,52 @@ def define_card(line):
         raise
         return []
 
-def python_card(line):
+import __builtin__
+
+def python_cards(line):
+    line = line.strip()
+    if line in dir(__builtin__):
+        return python_dir_cards(line, getattr(__builtin__, line))
+
+    if '.' in line:
+        ind = line.rfind(".")
+        try:
+            module = __import__(line[:ind])
+            obj = getattr(module, line[ind+1:])
+            if type(obj) == type:
+                return python_dir_cards(line, obj)
+        except:
+            pass
+
     try:
-        result = []
-        line = line.strip()
         module = __import__(line)
-        for attr in dir(module):
-            obj = getattr(module, attr)
-            if (not hasattr(obj, '__call__')
-                or type(obj) == type):
-                continue
-            if attr[0] == "_" or "__" in attr:
-                continue
-            if obj.__doc__:
-                ds = obj.__doc__.split("\n\n")
-                doc_lines = []
-                for i, d in enumerate(ds):
-                    if d.strip() == "":
-                        continue
-                    doc_lines.append(d)
-                    if attr not in d:
-                        break
-                doc = "\n".join(doc_lines)
-                front = line + "." + attr + "()"
-                back = doc
-                result.append((front, back))
-        return result
+        return python_dir_cards(line, module)
     except:
-        raise
-        return []
+        pass
+
+    return []
+
+def python_dir_cards(line, module):
+    result = []
+    for attr in dir(module):
+        obj = getattr(module, attr)
+        if not hasattr(obj, '__call__'):
+            continue
+        if type(obj) == type:
+            continue
+        if attr[0] == "_" or "__" in attr:
+            continue
+        if obj.__doc__:
+            ds = obj.__doc__.split("\n\n")
+            doc_lines = []
+            for i, d in enumerate(ds):
+                if d.strip() == "":
+                    continue
+                doc_lines.append(d)
+                if attr not in d:
+                    break
+            doc = "<br>".join(doc_lines)
+            front = line + "." + attr + "()"
+            back = doc
+            result.append((front, back))
+    return result
