@@ -43,7 +43,7 @@ def add_card(deck, card):
     # Find the basic model
     models_json = sqlite_server.query("select models from db.col")[0][0]
     models = json.loads(models_json)
-    nid = int_time(1000)
+    nid = str(int_time(1000))
     did = deck["id"]
     mid = -1
     for model in models.values():
