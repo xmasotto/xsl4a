@@ -134,8 +134,7 @@ def python_dir_cards(line, module):
                 if attr not in d:
                     break
             doc = "<br>".join(doc_lines)
-            front = ("In module %s ...<br>%s" % 
-                     line, doc)
+            front = "In module %s ...<br>%s" % (line, doc)
             back = line + "." + attr + "()"
             result.append((front, back))
     return result
