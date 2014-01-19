@@ -82,7 +82,8 @@ def insert_card(deck, line, deck_data):
         nid = anki_db.add_card(deck, (front, back))
         deck_data['nid2did'][nid] = deck['id']
         deck_data['line2nid'].get(line, []).append(nid)
-    print("Added card(s): %s" % line)
+    if len(cards) > 0:
+        print("Added card(s): %s" % line)
 
 def delete_card(deck, line, deck_data):
     if line in deck_data['line2nid']:
