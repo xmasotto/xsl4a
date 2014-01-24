@@ -43,8 +43,8 @@ def deck_main(deckname, new):
     deck_data = anki_util.load_deck_data(deckname)
     old = deck_data['lines']
 
-    print(old)
-    print(new)
+    #print(old)
+    #print(new)
 
     # update the decks
     deck = anki_db.get_deck(deckname)
@@ -53,14 +53,14 @@ def deck_main(deckname, new):
         deck_data = anki_util.new_deck_data()
         deck = anki_db.create_deck(deckname)
         for line in new:
-            insert_card(deck, line, deck_data)
+            insert_card(deck, line, deck_data, new)
     else:
-        print("Syncing deck: %s" % deckname)
         inserted, deleted = findInsertedDeleted(new, old)
+        print("Syncing deck: %s" % deckname)
         for line in deleted:
             delete_card(deck, line, deck_data)
         for line in inserted:
-            insert_card(deck, line, deck_data)
+            insert_card(deck, line, deck_data, new)
 
     # fix corrupted decks
     for nid in anki_db.get_default_cards():
@@ -72,7 +72,7 @@ def deck_main(deckname, new):
     deck_data['lines'] = new
     anki_util.save_deck_data(deckname, deck_data)
 
-def insert_card(deck, line, deck_data):
+def insert_card(deck, line, deck_data, new):
     cards = anki_cards.process_cards(line)
     for card in cards:
         def expand_image(url):
@@ -89,6 +89,8 @@ def insert_card(deck, line, deck_data):
         deck_data['line2nid'][line] = temp
     if len(cards) > 0:
         print("Added card(s): %s" % line)
+    else:
+        new.remove(line)
 
 def delete_card(deck, line, deck_data):
     if line in deck_data['line2nid']:

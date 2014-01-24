@@ -4,6 +4,7 @@ import BeautifulSoup
 import urllib2
 import json
 import re
+import traceback
 from anki_util import expand_macro, is_prefix
 
 def process_cards(line):
@@ -58,7 +59,8 @@ def wiki_card(line):
         back = "".join(bs.find("h1").findAll(text=True))
         return [(front, back)]
     except:
-        raise
+        print("Exception: %s" % line)
+        traceback.print_exc()
         return []
 
 def define_card(line):
@@ -87,7 +89,8 @@ def define_card(line):
 
         return [(word, back)]
     except:
-        raise
+        print("Exception: %s" % line)
+        traceback.print_exc()
         return []
 
 import __builtin__
@@ -105,38 +108,44 @@ def python_cards(line):
             if type(obj) == type:
                 return python_dir_cards(line, obj)
         except:
-            pass
+            print("Exception: %s" % line)
+            traceback.print_exc()
 
     try:
         module = __import__(line)
         return python_dir_cards(line, module)
     except:
-        pass
+        print("Exception: %s" % line)
+        traceback.print_exc()
 
     return []
 
 def python_dir_cards(line, module):
-    result = []
-    for attr in dir(module):
-        obj = getattr(module, attr)
-        if not hasattr(obj, '__call__'):
-            continue
-        if type(obj) == type:
-            continue
-        if attr[0] == "_" or "__" in attr:
-            continue
-        if obj.__doc__:
-            ds = obj.__doc__.split("\n\n")
-            doc_lines = []
-            for i, d in enumerate(ds):
-                if d.strip() == "":
-                    continue
-                doc_lines.append(d)
-                if attr not in d:
-                    break
-            doc = "<br>".join(doc_lines)
-            doc2 = re.sub(r'\b%s\('%attr, 'function(', doc)
-            front = "In module %s ... <br>%s" % (line, doc2) 
-            back = "%s.%s()" % (line, attr)
-            result.append((front, back))
+    try:
+        result = []
+        for attr in dir(module):
+            obj = getattr(module, attr)
+            if not hasattr(obj, '__call__'):
+                continue
+            if type(obj) == type:
+                continue
+            if attr[0] == "_" or "__" in attr:
+                continue
+            if obj.__doc__:
+                ds = obj.__doc__.split("\n\n")
+                doc_lines = []
+                for i, d in enumerate(ds):
+                    if d.strip() == "":
+                        continue
+                    doc_lines.append(d)
+                    if attr not in d:
+                        break
+                doc = "<br>".join(doc_lines)
+                doc2 = re.sub(r'\b%s\('%attr, 'function(', doc)
+                front = "In module %s ... <br>%s" % (line, doc2) 
+                back = "%s.%s()" % (line, attr)
+                result.append((front, back))
+    except:
+        print("Exception: %s" % line)
+        traceback.print_exc()
     return result
