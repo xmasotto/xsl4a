@@ -99,6 +99,7 @@ def insert_card(deck, line, deck_data, new):
     if cards_added > 0:
         print("Added card(s): %s" % line)
     else:
+        print("Failed to add card: %s" % line)
         new.remove(line)
 
 def delete_card(deck, line, deck_data):
