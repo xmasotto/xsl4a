@@ -56,13 +56,14 @@ def enum_card(line):
         n = len(items)
         if n > 1:
             k = (3 if n > 3 else n-1)
-            for i in range(n-k):
+            for i in range(n-k+1):
                 front = items[:i]
                 middle = [" ___ "]*k
                 end = items[i+k:]
                 items2 = front + middle + end
                 front = line % (', '.join(items2))
                 back = ', '.join(items[i:i+k])
+                print(front, back)
                 result.append((front, back))
         return result
     except:
