@@ -17,6 +17,8 @@ def process_cards(line):
 
 def get_cards(line):
     line = line.strip()
+    if "{" in line and "}" in line:
+        return enum_card(line)
     if "<" in line and ">" in line:
         return fill_in_blank_card(line)
     if ">" in line:
@@ -41,6 +43,32 @@ def fill_in_blank_card(line):
     back = expand_macro(
         line, "<", ">", lambda x: x)
     return [(front, back)]
+
+def enum_card(line):
+    try:
+        result = []
+        items = []
+        def extract_items(x):
+            items.extend(x.split(","))
+            return "%s"
+        line = line.replace("%","")
+        line = expand_macro(line, "{", "}", extract_items)
+        n = len(items)
+        if n > 1:
+            k = (3 if n > 3 else n-1)
+            for i in range(n-k):
+                front = items[:i]
+                middle = [" ___ "]*k
+                end = items[i+k:]
+                items2 = front + middle + end
+                front = line % (', '.join(items2))
+                back = line % (', '.join(items))
+                result.append((front, back))
+        return result
+    except:
+        print ("Exception: %s" % line)
+        traceback.print_exc()
+        return []
 
 def normal_card(line):
     return [tuple(line.split(">")[:2])]
