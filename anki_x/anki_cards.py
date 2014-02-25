@@ -62,7 +62,7 @@ def enum_card(line):
                 end = items[i+k:]
                 items2 = front + middle + end
                 front = line % (', '.join(items2))
-                back = line % (', '.join(items))
+                back = ', '.join(items[i:i+k])
                 result.append((front, back))
         return result
     except:
